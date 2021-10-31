@@ -1,0 +1,9 @@
+*.json
+*.html
+.idea
+
+app/interactive_graphs/
+app/data/
+
+venv/
+
