@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List
+from typing import List, Optional, Any
 from argparse import ArgumentParser
 import logging
 
@@ -8,6 +8,35 @@ from datetime import datetime as dt
 import pandas as pd
 
 from utils import email_utils
+
+
+class ArgParser(ArgumentParser):
+    def __init__(self, **kwargs):
+        super(ArgParser, self).__init__(**kwargs)
+
+    def add_common_args(self, flags: List[str]):
+        """
+        Convenience function to add commonly used args to the parser
+        :param flags:
+        :return:
+        """
+        for flag in flags:
+            if flag == "top_k":
+                self.add_argument("--top_k", default=30, type=int, help="Number of senders to show in plots.")
+
+            if flag == "ascending":
+                self.add_argument("--ascending", help="Whether to display bottom senders", action="store_true", default=False)
+
+            if flag == "hide_protected":
+                self.add_argument("--hide_protected", help="Whether to hide protected emails", action="store_true", default=True)
+
+    def to_dict(self):
+        """
+        Returns dictionary representation of self
+        :return:
+        """
+
+        return vars(self.parse_args())
 
 
 def email_count_by_sender_df(
@@ -43,6 +72,7 @@ def email_count_by_sender_df(
     df = pd.DataFrame(df_dict)
     df = df.sort_values("email_count", ascending=ascending)
 
+    df["email"] = df["sender"].apply(email_utils.email_from_sender)
     if hide_protected:
         df["is_protected"] = df.sender.apply(email_utils.is_email_protected).astype("uint")
         df = df[df.is_protected == 0]
@@ -59,12 +89,17 @@ def get_date_key():
     return dt.now().strftime("%dT%H-%M")
 
 
-def get_arg_parser():
+def get_arg_parser(flags_to_add: List[str] = None) -> ArgParser:
     """
     Returns an instance of ArgumentParser
+    :param flags_to_add:
     :return:
     """
-    return ArgumentParser()
+    parser = ArgParser()
+    if flags_to_add is not None:
+        parser.add_common_args(flags_to_add)
+
+    return parser
 
 
 def get_logger(name: str, level=logging.INFO, format_: str = None):

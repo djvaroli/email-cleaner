@@ -1,10 +1,11 @@
 from typing import List, Dict
+import re
 
 from simplegmail import Gmail
 from simplegmail.message import Message
 from simplegmail.query import construct_query
 
-from app.utils import general_utils
+from utils import general_utils
 
 
 PROTECTED_EMAIL_RULES = general_utils.load_json("protected_email_rules")
@@ -71,3 +72,16 @@ def get_emails_by_query(query: dict) -> List[Message]:
     """
     gmail = get_gmail_client()
     return gmail.get_messages(query=construct_query(query))
+
+
+def email_from_sender(sender: str):
+    """
+    Takes as input A Message.sender and returns just the email
+    :param sender:
+    :return:
+    """
+    pattern = re.compile(r"\<(.*)\>")
+    try:
+        return re.findall(pattern, sender)[0]
+    except IndexError:
+        return sender

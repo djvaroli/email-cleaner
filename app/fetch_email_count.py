@@ -19,7 +19,7 @@ def main(
         plot: bool = True,
         top_k: int = 30,
         ascending: bool = False,
-        hide_protected: bool = False
+        hide_protected: bool = True
 ):
     """
     Main function
@@ -50,12 +50,8 @@ def main(
 
 
 if __name__ == '__main__':
-    parser = general_utils.get_arg_parser()
+    parser = general_utils.get_arg_parser(flags_to_add=["top_k", "ascending", "hide_protected"])
     parser.add_argument("--plot", default=True, help="Whether to save interactive email statistics plots", action="store_true")
-    parser.add_argument("--top_k", default=30, type=int, help="Number of senders to show in plots.")
     parser.add_argument("--save", default=True, help="Whether to save data", action="store_true")
-    parser.add_argument("--ascending", help="Whether to display bottom senders", action="store_true", default=False)
-    parser.add_argument("--hide_protected", help="Whether to hide protected emails", action="store_true", default=False)
 
-    kwargs = vars(parser.parse_args())
-    main(**kwargs)
+    main(**parser.to_dict())
