@@ -19,7 +19,8 @@ def main(
         plot: bool = True,
         top_k: int = 30,
         ascending: bool = False,
-        hide_protected: bool = True
+        hide_protected: bool = True,
+        filepath: str = None
 ):
     """
     Main function
@@ -28,15 +29,18 @@ def main(
     :param top_k:
     :param ascending:
     :param hide_protected:
+    :param filepath
     :return:
     """
-    logger.info("Fetching emails from Gmail servers.")
-    emails_by_sender = email_utils.get_emails_by_sender()
+    if filepath is not None:
+        count_by_sender = general_utils.load_json(filepath)
+    else:
+        logger.info("Fetching emails from Gmail servers.")
+        emails_by_sender = email_utils.get_emails_by_sender()
+        count_by_sender = {sender: len(messages) for sender, messages in emails_by_sender.items()}
 
-    count_by_sender = {sender: len(messages) for sender, messages in emails_by_sender.items()}
-
-    if save:
-        general_utils.save_json("data/email_count_by_sender", count_by_sender, add_date_key=True)
+        if save:
+            general_utils.save_json("data/email_count_by_sender", count_by_sender, add_date_key=True)
 
     df = general_utils.email_count_by_sender_df(count_by_sender, ascending=ascending, hide_protected=hide_protected)
 
@@ -53,5 +57,6 @@ if __name__ == '__main__':
     parser = general_utils.get_arg_parser(flags_to_add=["top_k", "ascending", "hide_protected"])
     parser.add_argument("--plot", default=True, help="Whether to save interactive email statistics plots", action="store_true")
     parser.add_argument("--save", default=True, help="Whether to save data", action="store_true")
+    parser.add_argument("--filepath", required=False, type=str)
 
     main(**parser.to_dict())

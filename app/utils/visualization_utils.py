@@ -12,7 +12,10 @@ def get_bar_chart(x, y, orientation: str = 'h') -> go.Figure:
     fig.update_layout(
         xaxis=dict(title="Sender Index"),
         yaxis=dict(title="Sender", autorange="reversed"),
-        title="Number of Emails By Sender"
+        title="Number of Emails By Sender",
+        autosize=False,
+        height=2500,
+        width=1600
     )
     return fig
 
