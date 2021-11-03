@@ -5,6 +5,7 @@
 
 app/interactive_graphs/
 app/data/
+logs/
 
 venv/
 
