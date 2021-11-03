@@ -92,6 +92,8 @@ def get_emails_from_senders(senders: List[str]):
     :param senders:
     :return:
     """
+    if len(senders) == 0:
+        return []
 
     query = {
         'sender': senders

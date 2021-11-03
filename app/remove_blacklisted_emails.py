@@ -3,7 +3,10 @@ Fetches emails from gmail servers that have the 'blacklisted_senders' label,
 identifies the senders from those emails and moves all emails, from said list of senders, to trash.
 """
 import os
+
 from utils import email_utils, sms_utils, general_utils
+
+logger = general_utils.get_logger("Remove Blacklisted Emails")
 
 
 def main():
@@ -50,5 +53,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        logger.error(e)
+        sms_utils.send_sms(sms_utils.DEFAULT_TO_NUMBER, "Something went wrong!")
 
