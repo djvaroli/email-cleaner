@@ -1,6 +1,7 @@
 *.json
 *.html
 .idea
+.env
 
 app/interactive_graphs/
 app/data/
