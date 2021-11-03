@@ -165,3 +165,21 @@ def load_json(fp: str, mode: str = "r+"):
         data = json.load(f)
 
     return data
+
+
+def merge_dicts_with_int_values(dict1: dict, dict2: dict):
+    """
+    Given two dictionaries, where the values are integers combines them by adding
+    the values for the same keys
+    :param dict1:
+    :param dict2"
+    :return:
+    """
+    result = dict1.copy()
+    for key, value in dict2.items():
+        if result.get(key) is not None:
+            result[key] += value
+        else:
+            result[key] = value
+
+    return result

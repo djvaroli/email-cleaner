@@ -64,7 +64,7 @@ def is_email_protected(email: str, protected_email_rules: List[str] = None):
     return False
 
 
-def get_emails_by_query(query: dict) -> List[Message]:
+def get_emails_matching_query(query: dict) -> List[Message]:
     """
     Returns a list of simplegmail.message.Message objects that match a specific query
     :param query:
@@ -72,6 +72,31 @@ def get_emails_by_query(query: dict) -> List[Message]:
     """
     gmail = get_gmail_client()
     return gmail.get_messages(query=construct_query(query))
+
+
+def get_emails_with_labels(labels: List[str]):
+    """
+    Returns emails matching specified labels
+    :param labels:
+    :return:
+    """
+    query = {
+        "labels": labels
+    }
+    return get_emails_matching_query(query)
+
+
+def get_emails_from_senders(senders: List[str]):
+    """
+    Returns a list of emails that match the specified senders
+    :param senders:
+    :return:
+    """
+
+    query = {
+        'sender': senders
+    }
+    return get_emails_matching_query(query)
 
 
 def email_from_sender(sender: str):
