@@ -9,6 +9,11 @@ from app.utils import email_utils, sms_utils, general_utils
 logger = general_utils.get_logger("Remove Blacklisted Emails")
 
 
+data_root = "data"
+if os.path.isdir(data_root) is False:
+    os.mkdir(data_root)
+
+
 def main():
     """
     Main script function
@@ -36,13 +41,9 @@ def main():
 
         message.trash()
 
-    stats_message = "\n\nClean-up completed!\n\n"
-    for key, value in stats.items():
-        stats_message += f"{key} - {value}\n"
+    sms_utils.send_sms(sms_utils.DEFAULT_TO_NUMBER, "Clean-up completed!")
 
-    sms_utils.send_sms(sms_utils.DEFAULT_TO_NUMBER, stats_message)
-
-    path_to_global_stats = "data/global_cleanup_stats.json"
+    path_to_global_stats = f"{data_root}/global_cleanup_stats.json"
     if os.path.isfile(path_to_global_stats):
         global_stats = general_utils.load_json(path_to_global_stats)
         global_stats = general_utils.merge_dicts_with_int_values(global_stats, stats)

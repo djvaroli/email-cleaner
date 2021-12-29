@@ -74,14 +74,16 @@ def get_emails_matching_query(query: dict) -> List[Message]:
     return gmail.get_messages(query=construct_query(query))
 
 
-def get_emails_with_labels(labels: List[str]):
+def get_emails_with_labels(labels: List[str], exclude_starred: bool = True):
     """
     Returns emails matching specified labels
     :param labels:
+    :param exclude_starred:
     :return:
     """
     query = {
-        "labels": labels
+        "labels": labels,
+        "exclude_starred": exclude_starred
     }
     return get_emails_matching_query(query)
 

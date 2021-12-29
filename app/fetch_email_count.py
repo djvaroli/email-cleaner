@@ -4,7 +4,7 @@ Fetch email count by sender and if instructed plot and save the results.
 
 import os
 
-from app.utils import email_utils, general_utils, visualization_utils
+from utils import email_utils, general_utils, visualization_utils
 
 logger = general_utils.get_logger("Fetch Emails")
 
@@ -61,9 +61,9 @@ def main(
 
 
 if __name__ == '__main__':
-    parser = general_utils.get_arg_parser(flags_to_add=["top_k", "ascending", "hide_protected"])
+    parser = general_utils.get_arg_parser(flags_to_add=["top_k", "ascending"])
     parser.add_argument("--plot", default=True, help="Whether to save interactive email statistics plots", action="store_true")
-    parser.add_argument("--save", default=True, help="Whether to save data", action="store_true")
-    parser.add_argument("--filepath", required=False, type=str)
+    parser.add_argument("--save_data", default=True, help="Whether to save data", action="store_true")
+    parser.add_argument("--load_from_path", required=False, type=str)
 
     main(**parser.to_dict())
