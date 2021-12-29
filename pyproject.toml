@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "email-cleaner"
+version = "0.1.0"
+description = "Clean up your Gmail inbox"
+authors = ["Daniel Varoli <daniel.varoli@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+simplegmail = "^4.0.4"
+tqdm = "^4.62.3"
+twilio = "^7.4.0"
+python-dotenv = "^0.19.2"
+pandas = "^1.3.5"
+plotly = "^5.5.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
