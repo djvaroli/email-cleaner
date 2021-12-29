@@ -4,7 +4,7 @@ identifies the senders from those emails and moves all emails, from said list of
 """
 import os
 
-from utils import email_utils, sms_utils, general_utils
+from app.utils import email_utils, sms_utils, general_utils
 
 logger = general_utils.get_logger("Remove Blacklisted Emails")
 

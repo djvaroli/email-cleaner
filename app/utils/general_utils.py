@@ -1,13 +1,12 @@
 import json
 import os
-from typing import List, Optional, Any
+from typing import List, Any
 from argparse import ArgumentParser
 import logging
 
 from datetime import datetime as dt
-import pandas as pd
 
-from utils import email_utils
+import pandas as pd
 
 
 class ArgParser(ArgumentParser):
@@ -39,46 +38,27 @@ class ArgParser(ArgumentParser):
         return vars(self.parse_args())
 
 
-def email_count_by_sender_df(
-        email_count_by_sender: dict = None,
-        path_to_file: str = None,
-        ascending: bool = False,
-        hide_protected: bool = False
+def key_value_to_df(
+        dict_: dict,
+        keys_column: str,
+        values_column: str
 ) -> pd.DataFrame:
     """
-    Returns a df of email counts by sender
-    :param email_count_by_sender
-    :param path_to_file:
-    :param ascending:
-    :param hide_protected
+    Converts a dictionary to a pandas DataFrame with 2 columns, where the columns correspond to keys and values.
+    :param dict_:
+    :param keys_column:
+    :param values_column
     :return:
     """
 
-    if not email_count_by_sender and not path_to_file:
-        raise Exception("Must specify file or provide data to function")
+    columns = (keys_column, values_column)
+    df_dict = {column: list() for column in columns}
 
-    if email_count_by_sender is None:
-        email_count_by_sender = load_json(path_to_file)
+    for k, v in dict_.items():
+        df_dict[keys_column].append(k)
+        df_dict[values_column].append(v)
 
-    df_dict = {
-        "sender": [],
-        "email_count": []
-    }
-
-    for k, v in email_count_by_sender.items():
-        df_dict["sender"].append(k)
-        df_dict["email_count"].append(v)
-
-    df = pd.DataFrame(df_dict)
-    df = df.sort_values("email_count", ascending=ascending)
-
-    df["email"] = df["sender"].apply(email_utils.email_from_sender)
-    if hide_protected:
-        df["is_protected"] = df.sender.apply(email_utils.is_email_protected).astype("uint")
-        df = df[df.is_protected == 0]
-        df = df.drop(columns=["is_protected"])
-
-    return df
+    return pd.DataFrame(df_dict)
 
 
 def get_date_key():
@@ -151,18 +131,23 @@ def save_json(fp: str, obj, mode: str = "w+", add_date_key: bool = False) -> str
     return fp
 
 
-def load_json(fp: str, mode: str = "r+"):
+def load_json(fp: str, mode: str = "r+", backup: Any = None):
     """
     Loads json file and returns data
     :param fp:
     :param mode:
+    :param backup: The object to return in case loading of the file fails
     :return:
     """
     if "json" not in fp:
         fp = f"{fp}.json"
 
-    with open(fp, mode) as f:
-        data = json.load(f)
+    try:
+        with open(fp, mode) as f:
+            data = json.load(f)
+    except Exception:
+        if backup is not None:
+            data = backup
 
     return data
 

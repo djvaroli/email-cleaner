@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from utils import email_utils, general_utils
+from app.utils import email_utils, general_utils
 
 logger = general_utils.get_logger("Delete Emails")
 

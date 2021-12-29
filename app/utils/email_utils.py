@@ -5,10 +5,10 @@ from simplegmail import Gmail
 from simplegmail.message import Message
 from simplegmail.query import construct_query
 
-from utils import general_utils
+from . import general_utils
 
 
-PROTECTED_EMAIL_RULES = general_utils.load_json("protected_email_rules")
+PROTECTED_EMAIL_RULES = general_utils.load_json("protected_email_rules", backup=[])
 
 
 def get_gmail_client(client_secret_file: str = "credentials.json", **kwargs) -> Gmail:
